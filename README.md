@@ -5,15 +5,13 @@
 
   [![npm version](https://img.shields.io/npm/v/@amaanwarsi/imgx.svg)](https://www.npmjs.com/package/@amaanwarsi/imgx)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  
-  <br/>
-  [![Docs](https://img.shields.io/badge/docs-Imgx-0ea5e9?style=for-the-badge&logo=readthedocs&logoColor=white)](https://amaanwarsi.thedev.id/ImgX/)
+  [![Docs](https://img.shields.io/badge/docs-website-blue)](https://amaanwarsi.thedev.id/ImgX/)
+
+
+  Imgx is a lightweight, framework-agnostic image loading library for the web.
+  It only enhances images you explicitly opt into with a configurable `data-*` attribute such as `data-imgx`, and leaves every other `<img>` untouched.
 
 </div>
-
-Imgx is a lightweight, framework-agnostic image loading library for the web.
-
-It only enhances images you explicitly opt into with a configurable `data-*` attribute such as `data-imgx`, and leaves every other `<img>` untouched.
 
 
 ## Why Imgx
@@ -250,6 +248,7 @@ Instance methods:
 
 ## Docs
 
+- [Documentation](https://amaanwarsi.thedev.id/ImgX)
 - [Getting Started](https://github.com/amaanwarsi/ImgX/tree/main/docs/getting-started.md)
 - [API Reference](https://github.com/amaanwarsi/ImgX/tree/main/docs/api.md)
 - [Renderers](https://github.com/amaanwarsi/ImgX/tree/main/docs/renderers.md)
