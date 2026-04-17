@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /website/
+Disallow: /src/
+Disallow: /scripts/
+Disallow: /.git/
+Disallow: /node_modules/
+
+Sitemap: https://amaanwarsi.thedev.id/sitemap.xml

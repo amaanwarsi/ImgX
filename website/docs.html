@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Imgx documentation covering setup, API, configuration, lifecycle, renderers, and CDN usage.">
+    <meta name="keywords" content="imgx docs, image loading docs, javascript library docs">
+    <meta name="author" content="Amaan Warsi">
+    <meta name="theme-color" content="#f5f1e8">
+    <meta property="og:title" content="Imgx Docs">
+    <meta property="og:description" content="Setup, API, configuration, renderers, and CDN usage for Imgx.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://amaanwarsi.thedev.id/ImgX/website/docs.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="canonical" content="https://amaanwarsi.thedev.id/ImgX/website/docs.html">
+    <link rel="manifest" href="/website.webmanifest">
+    <link rel="icon" type="image/png" href="/logo.png">
+    <title>Imgx Docs</title>
+    <style>
+        :root {
+            --bg: #f5f1e8;
+            --panel: #fffdf8;
+            --text: #181613;
+            --muted: #625c52;
+            --line: #ddd4c7;
+            --code: #1f1d19;
+            --code-text: #f4efe7;
+            --max: 1120px;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Georgia", "Times New Roman", serif;
+            background: linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        code,
+        pre {
+            font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+        }
+
+        .wrap {
+            width: min(calc(100% - 2rem), var(--max));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(14px);
+            background: rgba(245, 241, 232, 0.82);
+            border-bottom: 1px solid rgba(24, 22, 19, 0.08);
+        }
+
+        .nav {
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-mark {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 0.8rem;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.7rem;
+            padding: 0 1rem;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .hero {
+            padding: 4rem 0 2rem;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            max-width: 44rem;
+            margin: 1rem 0 0;
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 1.04rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 1fr);
+            gap: 1rem;
+            padding-bottom: 4rem;
+        }
+
+        .toc,
+        .section {
+            background: rgba(255, 253, 248, 0.82);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+        }
+
+        .toc {
+            position: sticky;
+            top: 84px;
+            align-self: start;
+            padding: 1rem;
+        }
+
+        .toc-title {
+            margin: 0 0 0.8rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .toc nav {
+            display: grid;
+            gap: 0.3rem;
+        }
+
+        .toc a {
+            padding: 0.45rem 0.55rem;
+            border-radius: 0.7rem;
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
+
+        .toc a:hover {
+            background: #f1eadf;
+            color: var(--text);
+        }
+
+        .content {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .section {
+            padding: 1.35rem;
+        }
+
+        .section h2 {
+            margin: 0 0 0.8rem;
+            font-size: 1.8rem;
+            line-height: 1.1;
+        }
+
+        .section h3 {
+            margin: 1.2rem 0 0.55rem;
+            font-size: 1.1rem;
+        }
+
+        .section p,
+        .section li {
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .section ul {
+            margin: 0.6rem 0 0;
+            padding-left: 1.2rem;
+        }
+
+        .code {
+            margin-top: 0.9rem;
+            padding: 1rem 1.1rem;
+            border-radius: 1rem;
+            background: var(--code);
+            color: var(--code-text);
+            overflow: auto;
+            font-size: 0.9rem;
+            line-height: 1.68;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid.two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .card {
+            padding: 1rem;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background: #faf6ef;
+        }
+
+        @media (max-width: 900px) {
+            .layout,
+            .grid.two {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap nav">
+            <a class="brand" href="/">
+                <span class="brand-mark">I</span>
+                <span>Imgx</span>
+            </a>
+            <a class="button" href="/">Back home</a>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="hero">
+            <h1>Docs</h1>
+            <p>
+                Imgx is a selective image enhancement library. These docs focus on the current feature set: targeted image processing, layered configuration, lifecycle management, lazy loading, transitions, retries, fallbacks, built-in renderers, and CDN usage.
+            </p>
+        </section>
+
+        <div class="layout">
+            <aside class="toc">
+                <p class="toc-title">Contents</p>
+                <nav>
+                    <a href="#setup">Setup</a>
+                    <a href="#usage">Usage</a>
+                    <a href="#examples">Examples</a>
+                    <a href="#config">Configuration</a>
+                    <a href="#lifecycle">Lifecycle</a>
+                    <a href="#renderers">Renderers</a>
+                    <a href="#api">API</a>
+                    <a href="#cdn">CDN build</a>
+                </nav>
+            </aside>
+
+            <div class="content">
+                <section id="setup" class="section">
+                    <h2>Setup</h2>
+                    <p>
+                        By default, Imgx processes only images marked with <code>data-imgx</code>. That keeps behavior explicit and ensures untargeted images stay untouched.
+                    </p>
+                    <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/photo-large.jpg"
+  alt="Example photo"
+  width="1200"
+  height="800"
+/&gt;
+
+&lt;script type="module"&gt;
+  import imgx from "./src/index.js";
+&lt;/script&gt;</code></pre>
+                </section>
+
+                <section id="usage" class="section">
+                    <h2>Usage</h2>
+                    <div class="grid two">
+                        <div class="card">
+                            <h3>Default instance</h3>
+                            <p>The default export creates a shared instance and enables browser auto-init.</p>
+                            <pre class="code"><code>import imgx from "./src/index.js";</code></pre>
+                        </div>
+                        <div class="card">
+                            <h3>Custom instance</h3>
+                            <p>Create a separate instance when you want different defaults.</p>
+                            <pre class="code"><code>import { createImgx } from "./src/index.js";
+
+const gallery = createImgx({
+  placeholder: {
+    renderer: "blurPreview"
+  },
+  transition: {
+    type: "blur",
+    duration: 520
+  }
+});
+
+gallery.init();</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>Rescan dynamic content</h3>
+                    <pre class="code"><code>gallery.rescan(document.querySelector("[data-gallery]"));</code></pre>
+
+                    <h3>Custom target attribute</h3>
+                    <p>If you change <code>targetAttribute</code>, the related override attributes follow the same prefix.</p>
+                    <pre class="code"><code>const custom = createImgx({
+  targetAttribute: "data-photox"
+});
+
+custom.init();
+
+// HTML
+// &lt;img data-photox data-photox-src="/image.jpg" alt="Photo" /&gt;</code></pre>
+                </section>
+
+                <section id="examples" class="section">
+                    <h2>Examples</h2>
+
+                    <h3>Priority image that skips lazy loading</h3>
+                    <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/hero.jpg"
+  data-imgx-priority="high"
+  alt="Hero image"
+  width="1600"
+  height="900"
+/&gt;</code></pre>
+
+                    <h3>Blur preview with blur transition</h3>
+                    <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/card.jpg"
+  data-imgx-preview="/images/card-preview.jpg"
+  data-imgx-renderer="blurPreview"
+  data-imgx-transition="blur"
+  alt="Card image"
+/&gt;</code></pre>
+
+                    <h3>Retry logic with fallback sources</h3>
+                    <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/primary.jpg"
+  data-imgx-fallback="/images/fallback-a.jpg,/images/fallback-b.jpg"
+  data-imgx-retry-attempts="2"
+  data-imgx-retry-delay="800"
+  alt="Example"
+/&gt;</code></pre>
+
+                    <h3>Register a custom renderer</h3>
+                    <pre class="code"><code>const imgx = createImgx();
+
+imgx.registerRenderer("dots", {
+  mount({ overlay }) {
+    overlay.innerHTML = `
+      &lt;div style="display:grid;place-items:center;width:100%;height:100%;background:#111;color:#fff"&gt;
+        Loading...
+      &lt;/div&gt;
+    `;
+
+    return {
+      update() {},
+      destroy() {
+        overlay.textContent = "";
+      }
+    };
+  }
+});
+
+imgx.init();</code></pre>
+                </section>
+
+                <section id="config" class="section">
+                    <h2>Configuration</h2>
+                    <p>Imgx supports three layers of configuration:</p>
+                    <ul>
+                        <li>global defaults in the instance config</li>
+                        <li>per-image overrides via attributes like <code>data-imgx-renderer</code></li>
+                        <li>programmatic overrides passed during init or rescan</li>
+                    </ul>
+
+                    <h3>Common per-image overrides</h3>
+                    <ul>
+                        <li><code>data-imgx-renderer</code></li>
+                        <li><code>data-imgx-error-renderer</code></li>
+                        <li><code>data-imgx-transition</code></li>
+                        <li><code>data-imgx-lazy</code></li>
+                        <li><code>data-imgx-priority</code></li>
+                        <li><code>data-imgx-preview</code></li>
+                        <li><code>data-imgx-fallback</code></li>
+                        <li><code>data-imgx-retry-attempts</code></li>
+                        <li><code>data-imgx-retry-delay</code></li>
+                        <li><code>data-imgx-skeleton</code></li>
+                        <li><code>data-imgx-radius</code></li>
+                        <li><code>data-imgx-color</code></li>
+                        <li><code>data-imgx-auto</code></li>
+                    </ul>
+                </section>
+
+                <section id="lifecycle" class="section">
+                    <h2>Lifecycle</h2>
+                    <p>Each prepared image moves through a predictable internal lifecycle:</p>
+                    <ul>
+                        <li><code>idle</code></li>
+                        <li><code>loading</code></li>
+                        <li><code>loaded</code></li>
+                        <li><code>error</code></li>
+                    </ul>
+                    <p>This state flow is what drives placeholder visibility, transition timing, retries, and fallback rendering.</p>
+                </section>
+
+                <section id="renderers" class="section">
+                    <h2>Renderers</h2>
+                    <p>Renderers define the visual behavior before load and on failure. Imgx currently ships with five built-in renderers:</p>
+                    <ul>
+                        <li><code>skeleton</code> with <code>static</code>, <code>pulse</code>, and <code>shimmer</code> modes</li>
+                        <li><code>svgAnimation</code></li>
+                        <li><code>blurPreview</code></li>
+                        <li><code>dominantColor</code></li>
+                        <li><code>fallback</code></li>
+                    </ul>
+
+                    <h3>Register a custom renderer</h3>
+                    <pre class="code"><code>const dotsRenderer = {
+  name: "dots",
+  mount({ overlay }) {
+    overlay.innerHTML = "&lt;div style='width:100%;height:100%'&gt;Loading&lt;/div&gt;";
+
+    return {
+      update() {},
+      destroy() {
+        overlay.textContent = "";
+      }
+    };
+  }
+};
+
+const imgx = createImgx();
+imgx.registerRenderer("dots", dotsRenderer);</code></pre>
+                </section>
+
+                <section id="api" class="section">
+                    <h2>API</h2>
+                    <div class="grid two">
+                        <div class="card">
+                            <h3>Exports</h3>
+                            <ul>
+                                <li><code>Imgx</code></li>
+                                <li><code>createImgx(config?)</code></li>
+                                <li><code>imgx</code></li>
+                                <li><code>builtinRenderers</code></li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>Instance methods</h3>
+                            <ul>
+                                <li><code>init(root?, overrides?)</code></li>
+                                <li><code>rescan(root?, overrides?)</code></li>
+                                <li><code>configure(nextConfig)</code></li>
+                                <li><code>registerRenderer(name, renderer)</code></li>
+                                <li><code>use(plugin)</code></li>
+                                <li><code>enableAutoInit()</code></li>
+                                <li><code>destroy(image)</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="cdn" class="section">
+                    <h2>CDN build</h2>
+                    <p>The repository includes a central build step for browser-friendly distribution files while keeping <code>src/</code> untouched.</p>
+                    <pre class="code"><code>npm run build:cdn</code></pre>
+                    <p>This generates <code>dist/imgx.js</code> and <code>dist/imgx.min.js</code>.</p>
+                    <pre class="code"><code>&lt;script src="./dist/imgx.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const gallery = Imgx.createImgx();
+  gallery.init();
+&lt;/script&gt;</code></pre>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

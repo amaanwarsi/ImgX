@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Imgx is a lightweight, framework-agnostic image loading library with selective targeting, lazy loading, transitions, retries, and pluggable renderers.">
+    <meta name="keywords" content="imgx, image loading, lazy loading, javascript library, image placeholders, esm">
+    <meta name="author" content="Amaan Warsi">
+    <meta name="theme-color" content="#f5f1e8">
+    <meta property="og:title" content="Imgx">
+    <meta property="og:description"
+        content="Selective image enhancement for the web with lazy loading, placeholders, transitions, retries, and pluggable renderers.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://amaanwarsi.thedev.id/ImgX">
+    <meta property="og:image" content="/logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Imgx">
+    <meta name="twitter:description" content="A lightweight, framework-agnostic image loading library.">
+    <meta name="canonical" content="https://amaanwarsi.thedev.id/ImgX">
+    <link rel="manifest" href="/website.webmanifest">
+    <link rel="icon" type="image/png" href="/logo.png">
+    <title>Imgx</title>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Imgx",
+      "alternateName": "Imgx Image Loader",
+      "version": "0.1.0",
+      "softwareVersion": "0.1.0",
+      "description": "Imgx is a lightweight, framework-agnostic image loading library that provides lazy loading, placeholders, transitions, and extensible renderers with fine-grained control.",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "JavaScript Library",
+      "operatingSystem": "Web, Windows, macOS, Linux",
+      "isAccessibleForFree": true,
+
+      "url": "https://your-docs-site.com",
+      "downloadUrl": "https://www.npmjs.com/package/@amaanwarsi/imgx",
+      "installUrl": "https://www.npmjs.com/package/@amaanwarsi/imgx",
+
+      "image": "https://your-docs-site.com/og-image.png",
+
+      "programmingLanguage": "JavaScript",
+
+      "author": {
+        "@id": "#author"
+      },
+      "maintainer": {
+        "@id": "#author"
+      },
+
+      "license": "https://opensource.org/licenses/MIT",
+
+      "keywords": [
+        "imgx",
+        "image lazy loading",
+        "javascript image loader",
+        "image placeholder",
+        "intersection observer",
+        "frontend performance",
+        "web performance",
+        "image optimization"
+      ],
+
+      "featureList": [
+        "Selective image enhancement via data attributes",
+        "Lazy loading with IntersectionObserver",
+        "Custom renderers and plugin system",
+        "Built-in placeholders (skeleton, blur, dominant color)",
+        "Smooth transitions (fade, blur, scale)",
+        "Retry logic and fallback sources",
+        "Framework-agnostic and lightweight"
+      ],
+
+      "softwareHelp": {
+        "@type": "CreativeWork",
+        "name": "Documentation",
+        "url": "https://your-docs-site.com"
+      },
+
+      "codeRepository": "https://github.com/amaanwarsi/ImgX",
+
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "#author",
+      "name": "Amaan Warsi",
+      "url": "https://amaanwarsi.thedev.id/",
+      "jobTitle": "Software Developer",
+      "sameAs": [
+        "https://github.com/amaanwarsi",
+        "https://www.npmjs.com/~amaanwarsi",
+        "https://www.linkedin.com/in/amaanwarsi"
+      ]
+    }
+  ]
+}
+</script>
+    <style>
+        :root {
+            --bg: #f5f1e8;
+            --panel: #fffdf8;
+            --text: #181613;
+            --muted: #625c52;
+            --line: #ddd4c7;
+            --accent: #111111;
+            --accent-soft: #ebe3d6;
+            --code: #1f1d19;
+            --code-text: #f4efe7;
+            --max: 1080px;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Georgia", "Times New Roman", serif;
+            background:
+                radial-gradient(circle at top left, rgba(0, 0, 0, 0.03), transparent 30%),
+                linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        code,
+        pre {
+            font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+        }
+
+        .wrap {
+            width: min(calc(100% - 2rem), var(--max));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(14px);
+            background: rgba(245, 241, 232, 0.82);
+            border-bottom: 1px solid rgba(24, 22, 19, 0.08);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            min-height: 72px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-mark {
+            width: 2.35rem;
+            height: 2.35rem;
+            border-radius: 0.85rem;
+            border: 1px solid var(--line);
+            display: grid;
+            place-items: center;
+            background: var(--panel);
+            font-size: 1.05rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.8rem;
+            padding: 0 1rem;
+            border-radius: 999px;
+            border: 1px solid var(--text);
+            background: var(--text);
+            color: #fbf7f0;
+            font-size: 0.95rem;
+            transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button.secondary {
+            background: transparent;
+            color: var(--text);
+            border-color: var(--line);
+        }
+
+        .hero {
+            padding: 5.75rem 0 4rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.95fr;
+            gap: 2rem;
+            align-items: end;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+            line-height: 1.05;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin-top: 1rem;
+            font-size: clamp(3rem, 7vw, 5.6rem);
+            letter-spacing: -0.04em;
+            max-width: 11ch;
+        }
+
+        .lead {
+            margin: 1.25rem 0 0;
+            max-width: 36rem;
+            color: var(--muted);
+            font-size: 1.06rem;
+            line-height: 1.75;
+        }
+
+        .hero-actions,
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        .meta-chip {
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.35);
+            font-size: 0.9rem;
+        }
+
+        .hero-panel,
+        .card,
+        .section-panel {
+            background: rgba(255, 253, 248, 0.84);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+        }
+
+        .hero-panel {
+            padding: 1.4rem;
+            box-shadow: 0 24px 60px rgba(24, 22, 19, 0.06);
+        }
+
+        .stack {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .mini-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .panel-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            border-radius: 1rem;
+            background: #f8f4ec;
+            border: 1px solid rgba(24, 22, 19, 0.06);
+            font-size: 0.95rem;
+        }
+
+        .state {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--muted);
+        }
+
+        .dot {
+            width: 0.55rem;
+            height: 0.55rem;
+            border-radius: 999px;
+            background: #2a2722;
+        }
+
+        .sections {
+            display: grid;
+            gap: 1rem;
+            padding-bottom: 5rem;
+        }
+
+        .section-panel {
+            padding: 1.4rem;
+        }
+
+        .section-head {
+            display: grid;
+            gap: 0.4rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .section-head p,
+        .card p,
+        .list li,
+        .note {
+            color: var(--muted);
+            line-height: 1.72;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid.features {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid.split {
+            grid-template-columns: 1.1fr 0.9fr;
+        }
+
+        .grid.docs {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid.examples {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .card {
+            padding: 1.15rem;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .list {
+            margin: 0;
+            padding-left: 1.1rem;
+        }
+
+        .code {
+            padding: 1rem 1.1rem;
+            background: var(--code);
+            color: var(--code-text);
+            border-radius: 1rem;
+            overflow: auto;
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .footer {
+            padding: 0 0 4rem;
+        }
+
+        .footer-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            color: var(--muted);
+            background: rgba(255, 253, 248, 0.65);
+        }
+
+        @media (max-width: 960px) {
+
+            .hero-grid,
+            .grid.split,
+            .grid.features,
+            .grid.docs,
+            .grid.examples {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .nav {
+                min-height: 64px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 4.2rem;
+            }
+
+            h1 {
+                max-width: none;
+            }
+
+            .footer-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="wrap nav">
+            <a class="brand" href="/">
+                <span class="brand-mark">I</span>
+                <span>Imgx</span>
+            </a>
+
+            <nav class="nav-links" aria-label="Primary">
+                <a href="#features">Features</a>
+                <a href="#usage">Usage</a>
+                <a href="#docs">Docs</a>
+                <a href="/website/docs.html">Reference</a>
+            </nav>
+
+            <a class="button secondary" href="/website/docs.html">Docs</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div>
+                    <span class="eyebrow">Selective image enhancement</span>
+                    <h1>Only upgrade the images you mean to.</h1>
+                    <p class="lead">
+                        Imgx is a lightweight, framework-agnostic library for image loading on the web. It targets only
+                        opted-in images, adds lazy loading, transitions, retry logic, fallbacks, and pluggable
+                        renderers, and leaves everything else alone.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="button" href="#usage">Get started</a>
+                        <a class="button secondary" href="/website/docs.html">Read docs</a>
+                    </div>
+
+                    <div class="meta-row">
+                        <span class="meta-chip">Zero runtime dependencies</span>
+                        <span class="meta-chip">ES module + CDN build</span>
+                        <span class="meta-chip">Built-in renderer system</span>
+                    </div>
+                </div>
+
+                <aside class="hero-panel" aria-label="Library summary">
+                    <div class="stack">
+                        <div>
+                            <div class="mini-label">Lifecycle</div>
+                            <div class="panel-row">
+                                <span class="state"><span class="dot"></span>idle</span>
+                                <span class="state"><span class="dot"></span>loading</span>
+                                <span class="state"><span class="dot"></span>loaded</span>
+                                <span class="state"><span class="dot"></span>error</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mini-label">Built-in renderers</div>
+                            <div class="panel-row">
+                                <span>skeleton</span>
+                                <span>svgAnimation</span>
+                                <span>blurPreview</span>
+                            </div>
+                            <div class="panel-row">
+                                <span>dominantColor</span>
+                                <span>fallback</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mini-label">Objectives</div>
+                            <div class="panel-row">Strong defaults, fine-grained overrides, minimal API surface.</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <div class="wrap sections">
+            <section id="features" class="section-panel">
+                <div class="section-head">
+                    <h2>Current feature set</h2>
+                    <p>Focused features that reflect the current codebase and project goals, without inflated claims.
+                    </p>
+                </div>
+
+                <div class="grid features">
+                    <article class="card">
+                        <h3>Selective targeting</h3>
+                        <p>Imgx processes only images marked with the configured `data-*` attribute and ignores every
+                            other image in the document.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Layered configuration</h3>
+                        <p>Use global defaults, per-image `data-*` overrides, and programmatic per-instance overrides
+                            without losing fallback behavior.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Lazy loading with fallback</h3>
+                        <p>Uses `IntersectionObserver` when available and still loads correctly in environments where it
+                            is not supported.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Built-in renderers</h3>
+                        <p>Ships with skeleton, SVG animation, blur preview, dominant color, and fallback renderers in a
+                            pluggable system.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Transitions and retries</h3>
+                        <p>Supports fade, blur, and scale transitions, plus retry attempts, delays, and fallback source
+                            rotation.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Adaptive behavior</h3>
+                        <p>Includes network-aware auto mode and cache-aware decisions to favor lighter behavior where it
+                            makes sense.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="section-head">
+                    <h2>Project objectives</h2>
+                    <p>Imgx is meant to stay small, predictable, and easy to extend.</p>
+                </div>
+
+                <div class="grid split">
+                    <div class="card">
+                        <h3>What it optimizes for</h3>
+                        <ul class="list">
+                            <li>Minimal setup for default usage.</li>
+                            <li>Fine-grained control when individual images need different behavior.</li>
+                            <li>Clear separation between core loading logic and renderer behavior.</li>
+                            <li>Framework-agnostic usage across plain HTML, apps, and generated sites.</li>
+                            <li>Open-source friendliness with readable source and simple extension points.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3>What it avoids</h3>
+                        <ul class="list">
+                            <li>Touching images you did not opt into.</li>
+                            <li>Heavy runtime dependencies.</li>
+                            <li>Bulky UI abstractions tied to one framework.</li>
+                            <li>Single-purpose placeholder logic hardcoded into the core.</li>
+                            <li>Marketing claims that do not match the shipped library.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage" class="section-panel">
+                <div class="section-head">
+                    <h2>Simple usage</h2>
+                    <p>Use the source modules during development or the generated CDN build for direct browser usage.
+                    </p>
+                </div>
+
+                <div class="grid split">
+                    <div class="card">
+                        <h3>ES module</h3>
+                        <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/photo-large.jpg"
+  data-imgx-preview="/images/photo-preview.jpg"
+  alt="Example photo"
+  width="1200"
+  height="800"
+/&gt;
+
+&lt;script type="module"&gt;
+  import imgx from "./src/index.js";
+&lt;/script&gt;</code></pre>
+                    </div>
+
+                    <div class="card">
+                        <h3>CDN build</h3>
+                        <pre class="code"><code>&lt;script src="./dist/imgx.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const gallery = Imgx.createImgx({
+    placeholder: {
+      renderer: "skeleton"
+    }
+  });
+
+  gallery.init();
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="section-head">
+                    <h2>Usage examples</h2>
+                    <p>Common real-world patterns that match the current library behavior.</p>
+                </div>
+
+                <div class="grid examples">
+                    <div class="card">
+                        <h3>Priority image</h3>
+                        <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/hero.jpg"
+  data-imgx-priority="high"
+  alt="Hero"
+  width="1600"
+  height="900"
+/&gt;</code></pre>
+                    </div>
+
+                    <div class="card">
+                        <h3>Blur preview</h3>
+                        <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/card.jpg"
+  data-imgx-preview="/images/card-preview.jpg"
+  data-imgx-renderer="blurPreview"
+  data-imgx-transition="blur"
+  alt="Card"
+/&gt;</code></pre>
+                    </div>
+
+                    <div class="card">
+                        <h3>Retry and fallback</h3>
+                        <pre class="code"><code>&lt;img
+  data-imgx
+  data-imgx-src="/images/primary.jpg"
+  data-imgx-fallback="/images/fallback-a.jpg,/images/fallback-b.jpg"
+  data-imgx-retry-attempts="2"
+  data-imgx-retry-delay="800"
+  alt="Example"
+/&gt;</code></pre>
+                    </div>
+
+                    <div class="card">
+                        <h3>Custom target attribute</h3>
+                        <pre class="code"><code>import { createImgx } from "@amaanwarsi/imgx";
+
+const productImages = createImgx({
+  targetAttribute: "data-product-img"
+});
+
+productImages.init();</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="docs" class="section-panel">
+                <div class="section-head">
+                    <h2>Documentation</h2>
+                    <p>The project docs are split by usage, API, and renderer behavior so the core path stays easy to
+                        scan.</p>
+                </div>
+
+                <div class="grid docs">
+                    <a class="card" href="/website/docs.html">
+                        <h3>Reference site</h3>
+                        <p>Browse the complete web docs for setup, API surface, overrides, renderers, and examples.</p>
+                    </a>
+                    <a class="card" href="https://github.com/amaanwarsi/ImgX/blob/main/docs/getting-started.md">
+                        <h3>Getting started</h3>
+                        <p>Quick path for first use, rescanning, custom target attributes, and common per-image
+                            patterns.</p>
+                    </a>
+                    <a class="card" href="https://github.com/amaanwarsi/ImgX/blob/main/docs/api.md">
+                        <h3>API notes</h3>
+                        <p>Read the current exports, instance methods, lifecycle states, and top-level config areas.</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap footer-box">
+            <div>Imgx is MIT licensed and open to contribution.</div>
+            <div>
+                <a href="https://github.com/amaanwarsi/ImgX/blob/main/CONTRIBUTING.md">Contributing</a>
+                ·
+                <a href="https://github.com/amaanwarsi/ImgX/blob/main/LICENSE">License</a>
+                ·
+                <a href="https://github.com/amaanwarsi/ImgX/blob/main/README.md">README</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

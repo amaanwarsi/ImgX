@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# env
+.env
+
+# logs
+*.log
+npm-debug.log
+
+# system files
+.DS_Store
+
+# editors
+.idea/
+.vscode/
+
+# npm auth
+.npmrc
+
+# misc
+.npm-cache
+.codex
+coverage/

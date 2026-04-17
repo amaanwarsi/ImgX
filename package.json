@@ -1,0 +1,45 @@
+{
+  "name": "@amaanwarsi/imgx",
+  "version": "0.1.0",
+  "description": "Framework-agnostic image loading enhancements with selective targeting, lazy loading, and pluggable renderers.",
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "scripts": {
+    "build:cdn": "node scripts/build-cdn.mjs",
+    "prepack": "npm run build:cdn"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "images",
+    "lazy-loading",
+    "placeholders",
+    "intersectionobserver",
+    "esm",
+    "image-placeholder",
+    "image-renderer",
+    "performance",
+    "cdn"
+  ],
+  "homepage": "https://github.com/amaanwarsi/ImgX#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amaanwarsi/ImgX.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amaanwarsi/ImgX/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT"
+}
